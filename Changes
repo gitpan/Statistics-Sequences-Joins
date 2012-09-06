@@ -1,0 +1,7 @@
+Revision history for Statistics-Sequences-Joins-0.06
+
+0.06	Aug 2012
+	+ new methods joincount_observed, joincount_expected, and joincount_variance
+
+[see Statistics::Sequences for earlier changes]
+
