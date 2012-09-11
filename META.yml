@@ -15,10 +15,10 @@ name: Statistics-Sequences-Joins
 provides:
   Statistics::Sequences::Joins:
     file: lib/Statistics/Sequences/Joins.pm
-    version: 0.06
+    version: 0.061
 requires:
   List::AllUtils: 0.03
   Statistics::Sequences: 0.051
 resources:
   license: http://dev.perl.org/licenses/
-version: 0.06
+version: 0.061

@@ -16,7 +16,7 @@ my $builder = Module::Build->new(
             'Statistics::Sequences' => '0.051',
             'List::AllUtils' => '0.03',
     },
-    add_to_cleanup      => [ 'Statistics-Sequences-Joins-0.06-*' ],
+    add_to_cleanup      => [ 'Statistics-Sequences-Joins-0.061-*' ],
     create_makefile_pl => 'traditional',
 );
 

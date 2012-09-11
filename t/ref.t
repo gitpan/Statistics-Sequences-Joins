@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 22;
+use Test::More tests => 24;
 use constant EPS => 1e-2;
 
 BEGIN { use_ok('Statistics::Sequences::Joins') };
@@ -14,6 +14,9 @@ my %refdat = (
     },
     mice => {
         observed  => 1, expected => 3.50, variance => 1.75, z_value => -1.512, p_value => 0.13057, data => [qw/ban che che che che che che che/],
+    },
+    esp60 => { # from ESP-60 App. 8 p 381
+        observed => 70, expected => 99.5, variance => 49.75, prob => 1/2, z_value => 4.17, trials => 200
     },
 );
 my $val;
@@ -41,6 +44,12 @@ foreach (qw/observed expected z_value p_value/) {
    ok(defined $seq->{$_} );
    ok(equal($seq->{$_}, $refdat{'mice'}->{$_}), "$_  $seq->{$_} = $refdat{'mice'}->{$_}");
 }
+
+$val = $seq->jce(trials => $refdat{'esp60'}->{'trials'}, prob => $refdat{'esp60'}->{'prob'});
+ok(equal($val, $refdat{'esp60'}->{'expected'}), "expected count  $val = $refdat{'esp60'}->{'expected'}");
+
+$val = $seq->jcv(trials => $refdat{'esp60'}->{'trials'}, prob => $refdat{'esp60'}->{'prob'});
+ok(equal($val, $refdat{'esp60'}->{'variance'}), "expected count  $val = $refdat{'esp60'}->{'variance'}");
 
 sub equal {
     return 1 if $_[0] + EPS > $_[1] and $_[0] - EPS < $_[1];

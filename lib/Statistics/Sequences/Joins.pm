@@ -9,7 +9,7 @@ use Statistics::Sequences 0.051;
 @ISA = qw(Statistics::Sequences);
 use List::AllUtils qw(true uniq);
 
-$VERSION = '0.06';
+$VERSION = '0.061';
 
 =pod
 
@@ -21,8 +21,10 @@ Statistics::Sequences::Joins Wishart-Hirshfeld statistics for number of alternat
 
   use Statistics::Sequences::Joins;
   $joins = Statistics::Sequences::Joins->new();
-  $joins->load(qw/0 0 1 0 0 0 1 0 0 0 0 1 1 0 0 0 1 1 1 1 0 0/);
-  $joins->test()->dump();
+  $joins->load(qw/0 0 1 0 0 0 1 0 0 0 0 1 1 0 0 0 1 1 1 1 0 0/); # or load multinomial data and then dichotomise it
+  $val = $joins->observed(); # also expected() and variance()
+  ($val, $sig) = $joins->zscore();
+  $joins->test()->dump(); # print of all the descriptives and zscore, lumping each into object as well
 
 =head1 DESCRIPTION
 
@@ -54,7 +56,7 @@ Returns a new Joins object. Expects/accepts no arguments but the classname.
  $joins->load('sample1' => \@data1, 'sample2' => \@data2)
  $joins->load({'sample1' => \@data1, 'sample2' => \@data2})
 
-Optionally - pre-load some data: Load data anonymously or by name. See L<load|Statistics::Sequences/load> in the Statistics::Sequences manpage. These data be used for all the following methods.
+Optionally - pre-load some data: Load data anonymously or by name. See L<load|Statistics::Sequences/load> in the Statistics::Sequences manpage. If dichotomising around a central tendency, the value of the central tendency itself should be ignored.
 
 Alternatively, skip this action, and send the data to the descriptive methods that follow. Counting up the observed number of joins needs some data to count through, but getting the expectation and variance for the joincount can just be fed with the number of trials, and, optionally, the probability of one of the two events.
 
@@ -82,7 +84,7 @@ sub observed {# Count the number of joins in the given data:
     my $nuniq = scalar(uniq(@{$data_aref}));
     return 0 if $nuniq == 1;
     croak __PACKAGE__, '::test More than two states were found in the data: ' . join(' ', uniq(@$data_aref)) if $nuniq > 2;
-    my ($count, $i) = ();
+    my ($count, $i) = (0);
     foreach ($i = 1; $i < $num; $i++) {
         $count++ if $data_aref->[$i] ne $data_aref->[$i - 1]; # increment count if this event is not the same as the last event
     }
@@ -153,10 +155,11 @@ sub variance {
 
 =head2 zscore, joincount_zscore, jzs, z_value
 
- $val = $join->zscore(); # data already loaded, use default windows and prob
- $val = $join->zscore(data => $aref, prob => .5, ccorr => 1);
+ $val = $joins->zscore(); # data already loaded, use default windows and prob
+ $val = $joins->zscore(data => $aref, prob => .5, ccorr => 1);
+ ($zvalue, $pvalue) =  $joins->zscore(data => $aref, prob => .5, ccorr => 1, tails => 2); # same but wanting an array, get the p-value too
 
-Returns the zscore from a test of joincount deviation, taking the joincount expected away from that observed and dividing the root of the expected joincount variance, by default with a continuity correction in the numerator. 
+Returns the zscore from a test of joincount deviation, taking the joincount expected away from that observed and dividing by the root expected joincount variance, by default with a continuity correction in the numerator. Called wanting an array, returns the z-value with its p-value for the tails (1 or 2) given.
 
 The data to test can already have been L<load|load>ed, or you send it directly as a flat referenced array keyed as C<data>.
 
@@ -169,13 +172,15 @@ sub zscore {
    my $pex = defined $args->{'prob'} ? $args->{'prob'} : .5;
    my $num = defined $args->{'trials'} ? $args->{'trials'} : ref $args->{'data'} ? scalar @{$args->{'data'}} : scalar(@{$self->{'testdata'}});
    my $ccorr = defined $args->{'ccorr'} ? delete $args->{'ccorr'} : 1;
-   my $zval = $self->{'zed'}->zscore(
+   my $tails = delete $args->{'tails'} || 2;
+   my ($zval, $pval) = $self->{'zed'}->zscore(
         observed => $jco,
         expected => $self->jce(prob => $pex, trials => $num),
         variance => $self->jcv(prob => $pex, trials => $num),
         ccorr => $ccorr,
+        tails => $tails,
      );
-    return $zval;
+    return wantarray ? ($zval, $pval) : $zval;
 }
 *jzs = \&zscore;
 *joincount_zscore = \&zscore;
@@ -185,7 +190,7 @@ sub zscore {
 
  $joins->test();
 
-Test the currently loaded data for significance of the number of joins. Returns the Joins object.
+Test the currently loaded data for significance of the number of joins. Returns the Joins object, lumped with a C<z_value>, C<p_value>, and the descriptives C<observed>, C<expected> and C<variance>.
 
 =cut
 
@@ -195,8 +200,8 @@ sub test {
    $seq->_testdata_aref($args);
    my $pex = defined $args->{'prob'} ? $args->{'prob'} : .5;
    my $jco = defined $args->{'observed'} ? $args->{'observed'} : $seq->jco($args);
-   my $jce = $seq->joincount_expected();
-   my $jve = $seq->joincount_variance();
+   my $jce = $seq->joincount_expected($args);
+   my $jve = $seq->joincount_variance($args);
 
    if ($jve) {
        $seq->_expound($jco, $jce, $jve, $args);
@@ -299,9 +304,5 @@ This program is free software. It may be used, redistributed and/or modified und
 To the maximum extent permitted by applicable law, the author of this module disclaims all warranties, either express or implied, including but not limited to implied warranties of merchantability and fitness for a particular purpose, with regard to the software and the accompanying documentation.
 
 =back
-
-=head1 END
-
-This ends documentation of a Perl implementation of the Wishart-Hirshfeld Joins test for randomness and group differences within a sequence.
 
 =cut

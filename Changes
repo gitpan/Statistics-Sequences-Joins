@@ -1,4 +1,9 @@
-Revision history for Statistics-Sequences-Joins-0.06
+Revision history for Statistics-Sequences-Joins-0.061
+
+0.061   Sept 2012
+    + get p-value as well as z-value from method zscore returned if wantarray.
+    + send args from 'test' to descriptives methods
+    + POD note re skipping mean etc if dichotomizing about it
 
 0.06	Aug 2012
 	+ new methods joincount_observed, joincount_expected, and joincount_variance
