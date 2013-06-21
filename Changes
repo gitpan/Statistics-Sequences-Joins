@@ -1,8 +1,13 @@
-Revision history for Statistics-Sequences-Joins-0.061
+Revision history for Statistics-Sequences-Joins-0.10
+
+0.10 June 2013
+    + CPAN upload of 0.06+ revisions
+    + NB: not compatible with earlier versions
 
 0.061   Sept 2012
     + get p-value as well as z-value from method zscore returned if wantarray.
     + send args from 'test' to descriptives methods
+    + correct joincount_observed() and other desc methods to use testdata returned, if any, not necessarily sent or previously transformed
     + POD note re skipping mean etc if dichotomizing about it
 
 0.06	Aug 2012
