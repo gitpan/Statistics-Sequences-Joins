@@ -3,7 +3,7 @@ use warnings;
 use Test::More tests => 20;
 use constant EPS => 1e-2;
 
-use Statistics::Sequences::Joins 0.10;
+use Statistics::Sequences::Joins 0.11;
 
 my $seq = Statistics::Sequences::Joins->new();
 isa_ok($seq, 'Statistics::Sequences::Joins');
@@ -56,7 +56,7 @@ $val = $seq->variance();
 ok(equal($val, $refdat{'chimps'}->{'variance'}), "joincount_variance  observed  $val != $refdat{'chimps'}->{'variance'}");
 
 # Using transformed (matched) data - direct calls to descriptives
-use Statistics::Data::Dichotomize;
+require Statistics::Data::Dichotomize;
 my $seqd = Statistics::Data::Dichotomize->new();
 my $matched = $seqd->match(data => [$refdat{'chimps'}->{'data'}, $refdat{'mice'}->{'data'}]);
 eval {$seq->load(data => $matched);};

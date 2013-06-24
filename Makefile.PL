@@ -6,6 +6,7 @@ WriteMakefile
   'VERSION_FROM' => 'lib/Statistics/Sequences/Joins.pm',
   'PREREQ_PM' => {
                    'List::AllUtils' => '0.03',
+                   'Statistics::Data::Dichotomize' => '0.01',
                    'Statistics::Sequences' => '0.10',
                    'Statistics::Zed' => '0.072',
                    'Test::More' => 0

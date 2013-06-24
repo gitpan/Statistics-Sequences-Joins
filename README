@@ -1,7 +1,6 @@
-Statistics-Sequences-Joins-0.10
+Statistics-Sequences-Joins-0.11
 
-Version 0.10
-fixes for the module are worth downloading.
+Version 0.11
 
 
 INSTALLATION
@@ -30,16 +29,16 @@ perldoc command.
 You can also look for information at:
 
     RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Statistics-Sequences-Joins-0.10
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=Statistics-Sequences-Joins-0.11
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/Statistics-Sequences-Joins-0.10
+        http://annocpan.org/dist/Statistics-Sequences-Joins-0.11
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/Statistics-Sequences-Joins-0.10
+        http://cpanratings.perl.org/d/Statistics-Sequences-Joins-0.11
 
     Search CPAN
-        http://search.cpan.org/dist/Statistics-Sequences-Joins-0.10/
+        http://search.cpan.org/dist/Statistics-Sequences-Joins-0.11/
 
 
 LICENSE AND COPYRIGHT

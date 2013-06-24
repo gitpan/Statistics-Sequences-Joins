@@ -11,7 +11,7 @@ use List::AllUtils qw(true uniq);
 use Statistics::Zed 0.072;
 our $zed = Statistics::Zed->new();
 
-$VERSION = '0.10';
+$VERSION = '0.11';
 
 =pod
 
@@ -22,7 +22,7 @@ Statistics::Sequences::Joins Wishart-Hirshfeld statistics for number of alternat
 =head1 SYNOPSIS
 
  use strict;
- use Statistics::Sequences::Joins 0.10; # methods/args here are not compatible with earlier versions
+ use Statistics::Sequences::Joins 0.11; # methods/args here are not compatible with earlier versions
  my $joins = Statistics::Sequences::Joins->new();
  $joins->load(qw/1 0 0 0 1 1 0 1 1 0 0 1 0 0 1 1 1 1 0 1/); # dichotomous sequence (any values); or send as "data => $aref" with each stat call
  my $val = $joins->observed(); # other methods include: expected(), variance(), obsdev() and stdev()
@@ -46,7 +46,7 @@ So there's a join (of 0 and 1) at indices 1 and 2, then immediately another join
 There are methods to get the observed and expected joincounts, and the expected variance in joincount. Counting up the observed number of joins needs some data to count through, but getting the expectation and variance for the joincount - if not sent actual data in the call, or already cached via L<load|load> - can just be fed with the number of trials, and, optionally, the binomial event probability (of one of the two events occurring; default = 0.50). Note that this also differs from the way runs are counted: the expected joincount, and its variance, where the relative frequencies of the two events are counted off the given data (although this option is availabe for figuring out the binomial probability here, too).
 
 Have non-dichotomous, continuous or multinomial data? See L<Statistics::Data::Dichotomize> for how to prepare non-dichotomous data, whether numerical or made up of categorical events, for test of joins.
-      
+
 =head1 METHODS
 
 Methods are those described in L<Statistics::Sequences>, but can be used directly from this module, as follows.
@@ -163,7 +163,7 @@ Returns the expected variance in the number of joins for the given data.
 
 =for html <p>&nbsp;&nbsp;<i>V[J]</i> = 4<i>N</i><i>p</i><i>q</i>(1 &ndash; 3<i>p</i><i>q</i>) &ndash; 2<i>p</i><i>q</i>(3 &ndash; 10<i>p</i><i>q</i>)
 
-defined as above for L<joincount_expected|expected, joincount_expected, jce>.
+defined as above for L<joincount_expected|Statistics::Sequences::Joins/expected, joincount_expected, jce>.
 
 The data to test can already have been L<load|Statistics::Sequences/load>ed, or you send it directly keyed as C<data>. The data are only needed to count off the number of trials, and the proportion of 1s (or other given state of the two), if the C<trials> and C<prob> attributes aren't defined. If C<state> is defined, then C<prob> is worked out from the actual data (as long as there are some, or expect a C<croak>). If C<state> is not defined, C<prob> takes the value you give to it, or, if it too is not defined, then 1/2.
 
@@ -324,7 +324,7 @@ Here the problem is to assess the degree of consistency of in number of matches 
         $scores[$i]++ if $stimulus eq $response;
     }
   }
-  
+
   my $seq = Statistics::Sequences->new();
   $seq->load(@scores);
   $seq->cut(value => 5, equal => 0); # value is the expected number of matches (Np); ignoring values equal to this
